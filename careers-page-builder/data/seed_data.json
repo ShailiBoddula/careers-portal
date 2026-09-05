@@ -1,0 +1,37 @@
+{
+  "companies": [
+    {
+      "name": "Acme Corporation",
+      "slug": "acme",
+      "primary_color": "#2563eb",
+      "secondary_color": "#1e40af",
+      "logo_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80",
+      "banner_url": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&auto=format&fit=crop&q=80",
+      "culture_video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "headline": "Build the Infrastructure that Powers Global Commerce",
+      "recruiter_email": "recruiter@acme.com"
+    },
+    {
+      "name": "NovaLabs AI",
+      "slug": "novalabs",
+      "primary_color": "#7c3aed",
+      "secondary_color": "#5b21b6",
+      "logo_url": "https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=160&auto=format&fit=crop&q=80",
+      "banner_url": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&auto=format&fit=crop&q=80",
+      "culture_video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "headline": "Pioneering Foundation Models for Biological Discovery",
+      "recruiter_email": "recruiter@novalabs.ai"
+    },
+    {
+      "name": "Vertex Health",
+      "slug": "vertex",
+      "primary_color": "#059669",
+      "secondary_color": "#047857",
+      "logo_url": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=160&auto=format&fit=crop&q=80",
+      "banner_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1600&auto=format&fit=crop&q=80",
+      "culture_video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "headline": "Delivering Compassionate Healthcare Everywhere",
+      "recruiter_email": "recruiter@vertexhealth.com"
+    }
+  ]
+}
