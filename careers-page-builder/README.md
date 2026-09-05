@@ -1,7 +1,7 @@
 Careers Page Builder
 
-GitHub:https://github.com/ShailiBoddula/careers-portal⁠￼
 Production Live Link: https://frontend-henna-ten-wg02ufviqk.vercel.app/⁠￼
+GitHub:https://github.com/ShailiBoddula/careers-portal
 
 1. Project Overview
 
