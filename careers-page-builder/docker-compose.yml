@@ -11,7 +11,7 @@ services:
       - JWT_SECRET=production-grade-super-secret-key-replace-in-real-deployment-min-32-chars
       - JWT_ALGORITHM=HS256
       - JWT_EXPIRATION_HOURS=24
-      - FRONTEND_URL=http://localhost:5173
+      - FRONTEND_URL=https://careers-portal-x8lt.onrender.com
       - APP_ENV=production
       - APP_HOST=0.0.0.0
       - APP_PORT=8000
@@ -26,7 +26,7 @@ services:
       dockerfile: Dockerfile
     container_name: careers_frontend
     environment:
-      - VITE_API_BASE_URL=http://localhost:8000
+      - VITE_API_BASE_URL=https://careers-portal-x8lt.onrender.com
     ports:
       - "5173:80"
     depends_on:
