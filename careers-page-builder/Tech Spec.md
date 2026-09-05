@@ -1,181 +1,181 @@
-# Technical Specification: Multi-Tenant ATS Careers Page Builder
+Tech Spec — Careers Page Builder
 
-## 1. Problem Statement
-Modern enterprises require distinct, high-fidelity careers portals that reflect employer brand identity while maintaining deep structural consistency and searchability for open positions. Recruiting teams need agility to iterate on copy, company values, culture videos, and open roles without engineering bottlenecks, while guaranteeing that draft modifications never compromise live public vacancy boards.
+1. Assumptions
 
----
+For the first version of the project, I made a few assumptions.
 
-## 2. Goals & Non-Goals
+Each recruiter account is connected to only one company. Each company has its own careers-page settings and jobs, so the data is kept separate.
 
-### Goals
-- **Multi-Tenant Isolation**: Completely segregate tenant company data, recruiters, career pages, sections, and open jobs.
-- **Dynamic Modular Builder**: Empower recruiters to add, configure, hide, delete, and reorder modular page sections (Hero, About Us, Values, Life at Company, Culture, Benefits, Open Positions).
-- **Draft vs. Published Model**: Ensure clear transactional boundaries between internal drafts and published candidate-facing portals.
-- **Candidate Discovery**: Provide instant, composite search and filtering (by keyword, location, job type).
-- **Accessibility & SEO**: Semantic HTML hierarchy, WCAG 2.1 AA keyboard navigation (including accessible section reordering without external drag-and-drop dependencies), and automatic Google `JobPosting` JSON-LD schema injection.
+Only content that has been published is shown to candidates.
 
-### Non-Goals
-- Full applicant tracking workflow (e.g. resume parsing, interview scheduling). Candidates are directed to external ATS application links via an Apply CTA.
-- Direct file storage/media hosting microservices (URLs for logos/banners/videos are accepted).
+There is no candidate application process in this version. Candidates can view the jobs and their details, but applying for a job is not part of the current system.
 
----
+For the prototype, sample job data is enough.
 
-## 3. Technology Stack & Rationale
+For production, I planned to use Neon PostgreSQL as the database, while SQLite is used for testing.
 
-```
-+-------------------------------------------------------------------------+
-|                               FRONTEND                                  |
-|   React 18 + Vite + Tailwind CSS + Lucide Icons + React Router DOM v6   |
-+-------------------------------------------------------------------------+
-                                    │
-                                    │ REST APIs / Bearer JWT
-                                    ▼
-+-------------------------------------------------------------------------+
-|                                BACKEND                                  |
-|         FastAPI + Pydantic v2 + SQLAlchemy 2.0 ORM + python-jose        |
-+-------------------------------------------------------------------------+
-                                    │
-                                    │ Connection Pooling / SSL
-                                    ▼
-+-------------------------------------------------------------------------+
-|                               DATABASE                                  |
-|             PostgreSQL / Neon (Cloud) & SQLite (Local / Test)           |
-+-------------------------------------------------------------------------+
-```
+2. Architecture
 
-- **Frontend**: React + Tailwind CSS allows maximum layout flexibility, rapid component reusability, zero CSS runtime overhead, and responsive styling without heavyweight UI kits.
-- **Backend**: FastAPI delivers native async performance, automatic OpenAPI documentation, and strict schema validation via Pydantic v2.
-- **Database**: PostgreSQL / Neon ensures relational integrity, ACID transactions, and foreign key cascading. SQLite provides zero-dependency test isolation.
-- **Auth**: Stateless JSON Web Tokens (JWT) signed with HMAC-SHA256.
+The project is divided into a frontend, backend and database.
 
----
+I used React for the frontend and FastAPI for the backend REST services.
 
-## 4. Database Schema Design
+SQLAlchemy is used for working with the database, and Pydantic is used to validate the data.
 
-### Entity Relationship Diagram
-```mermaid
-erDiagram
-    COMPANIES ||--o{ USERS : has
-    COMPANIES ||--o{ CAREER_PAGES : owns
-    COMPANIES ||--o{ JOBS : posts
-    CAREER_PAGES ||--o{ PAGE_SECTIONS : contains
+For production storage, PostgreSQL/Neon is used.
 
-    COMPANIES {
-        string id PK
-        string name
-        string slug UK
-        string logo_url
-        string primary_color
-        string secondary_color
-        string banner_url
-        string culture_video_url
-        datetime created_at
-        datetime updated_at
-    }
+The recruiter APIs are protected because they contain management features. Public APIs are used to show published careers-page content and open jobs to candidates.
 
-    USERS {
-        string id PK
-        string email UK
-        string password_hash
-        string role
-        string company_id FK
-        datetime created_at
-        datetime updated_at
-    }
+3. Database Schema
 
-    CAREER_PAGES {
-        string id PK
-        string company_id FK
-        string headline
-        string description
-        boolean published
-        datetime created_at
-        datetime updated_at
-    }
+The main parts of the database are:
 
-    PAGE_SECTIONS {
-        string id PK
-        string career_page_id FK
-        string section_type
-        string title
-        string content
-        integer display_order
-        boolean is_visible
-        boolean is_published
-        datetime created_at
-        datetime updated_at
-    }
+User
 
-    JOBS {
-        string id PK
-        string company_id FK
-        string title
-        string description
-        string location
-        string job_type
-        string department
-        string requirements
-        string responsibilities
-        string benefits
-        string application_url
-        boolean is_active
-        datetime posted_at
-        datetime created_at
-        datetime updated_at
-    }
-```
+The User table stores information such as the user’s ID, email, password hash, company ID and role-related information.
 
----
+Company
 
-## 5. Multi-Tenancy & Security Strategy
+The Company table stores the company ID, company name, slug and branding/configuration information.
 
-### Tenant Boundary Enforcement
-- **Identity Derivation**: Recruiter identity and company affiliation (`company_id`) are decoded exclusively from the cryptographically verified JWT payload on the backend.
-- **Ownership Verification**: All mutative endpoints (`PUT /api/company/me/jobs/{id}`, `DELETE /api/company/me/sections/{id}`, etc.) perform strict verification:
-  ```python
-  if job.company_id != current_user.company_id:
-      raise ForbiddenError("Access forbidden: You do not own this job")
-  ```
-- **Cross-Tenant Access Prevention**: A recruiter from Company A attempting to access or modify resources belonging to Company B receives an immediate `403 Forbidden` response.
+CareerPage
 
----
+This stores the careers page for a company. It contains the company ID, publication state and page configuration.
 
-## 6. Page Builder & Accessible Section Reordering
-Rather than relying on brittle, heavy drag-and-drop libraries (such as `dnd-kit` or `react-dnd`), the page builder implements:
-1. **Keyboard-Accessible Reorder Controls**: Up and Down arrow controls with distinct ARIA labels (`aria-label="Move Section Up"`) allowing seamless screen-reader and keyboard-only operation.
-2. **Deterministic Sequence Ordering**: Sections maintain a zero-indexed `display_order` column. Reordering transactions update all target indices atomically in a single batch request to `/api/company/me/sections/reorder`.
+PageSection
 
----
+This represents the different sections of a careers page. It stores things like the section type, its content, display order and whether the section is enabled.
 
-## 7. Draft vs. Published State Management
-- When recruiters modify sections, company branding, or page headlines, changes remain in **Draft** state.
-- Sections feature both `is_visible` (draft visibility) and `is_published` (public visibility) flags.
-- Calling `POST /api/company/me/careers/publish` promotes the current draft configuration to live status and flips `career_pages.published = true`.
-- Calling `POST /api/company/me/careers/unpublish` immediately marks `career_pages.published = false`, causing subsequent public queries to return a clean `404 Not Found`.
+Job
 
----
+The Job table stores information about a job such as its title, location, employment type, department, description and current status.
 
-## 8. SEO, Crawlability & Accessibility
+The company ownership is maintained using foreign keys and authorization checks.
 
-### SEO Architecture
-- Dynamic title and meta descriptions updated reactively based on company and job context.
-- **Google JobPosting Schema (JSON-LD)** dynamically injected on job detail pages containing:
-  - `title`, `description`, `datePosted`, `employmentType`
-  - `hiringOrganization` (name, logo, URL)
-  - `jobLocation` (locality, remote indicators)
+For public pages, the company is found using its slug, and only its published page and open jobs are shown.
 
-### Accessibility (WCAG 2.1 AA)
-- High contrast color ratios on all text and UI containers.
-- Visible focus rings (`focus:ring-2 focus:ring-blue-600 focus:ring-offset-2`).
-- Semantic HTML tags (`<header>`, `<main>`, `<section>`, `<footer>`, `<h1>`-`<h3>`).
-- Fully accessible form controls with corresponding `<label for="...">` associations.
+4. Multi-Tenancy
 
----
+The project uses logical multi-tenancy at the application and data level.
 
-## 9. Performance & Scalability Considerations
-- **Stateless Application Servers**: FastAPI instances maintain no session state, allowing horizontal scaling behind load balancers.
-- **Database Connection Pooling**: Built-in SQLAlchemy engine pool recycling with `pool_pre_ping=True` and bounded overflow for cloud databases like Neon.
-- **PostgreSQL Indexing**:
-  - `companies.slug` (Unique B-tree index for O(1) public lookups)
-  - `jobs.company_id` and `jobs.is_active` (Composite indexing for filtered candidate queries)
-  - `page_sections.career_page_id` and `page_sections.display_order` (Ordered traversal index)
+In simple terms, when a recruiter is logged in, the queries and changes they make are connected to their company_id.
+
+This makes sure that a recruiter can work only with their own company’s data.
+
+If someone tries to access or modify resources belonging to another company, the request is rejected.
+
+5. Security
+
+For recruiter login sessions, I used JWT authentication.
+
+Passwords are stored using bcrypt hashing instead of storing the actual passwords directly.
+
+Protected API endpoints require the user to be authenticated.
+
+Company-level authorization is also used to prevent one company from accessing another company’s data.
+
+Pydantic is used to validate API input and output data.
+
+For production, the application should use HTTPS, a strong JWT secret and restricted CORS. Sensitive information should also be kept outside the source code.
+
+6. Page Builder
+
+The careers page is made using different modular sections instead of creating a separate page implementation for every company.
+
+The recruiter can edit the content of these sections, enable or disable them and change their order.
+
+This makes the page easier to customize for different companies.
+
+7. Draft and Published Pages
+
+When a recruiter makes changes to the careers page, they can first preview those changes.
+
+The published version controls what candidates can see.
+
+So, simply editing something in the recruiter area does not automatically change the public page. The changes need to be published first.
+
+8. Candidate Experience
+
+Candidates can access a company’s public careers page using the company’s slug.
+
+The page shows open job positions using job cards.
+
+Candidates can search for jobs using the Job Title and filter them based on Location and Job Type.
+
+They can select a job to open its individual details page and see the available CTA.
+
+The candidate interface is also designed to work on mobile, tablet and desktop screens.
+
+9. REST API
+
+The backend provides different API endpoints for different parts of the application.
+
+These include:
+
+* Authentication endpoints for login and authentication.
+* Company and branding endpoints.
+* Endpoints for creating, editing, deleting and reordering sections.
+* Recruiter endpoints for managing jobs and their status.
+* Public endpoints for careers pages, job search, filters and job details.
+* A health endpoint that can be used to check whether the deployed backend is working.
+
+10. SEO
+
+The public careers pages are designed so that search engines can crawl the actual career and job content.
+
+The information is available through backend representations instead of depending only on a client-side page shell.
+
+Metadata and structured-data support are also included to help with SEO.
+
+11. Accessibility and Responsive Design
+
+I used semantic HTML and accessible names for controls so that the interface is easier to understand and use.
+
+Keyboard focus states are visible, which helps users who navigate using a keyboard.
+
+The UI also uses readable typography and considers good contrast.
+
+I checked the application on different mobile, tablet and desktop screen sizes to make sure the layout works properly across them.
+
+12. Test Plan
+
+The testing covers the important parts of the application.
+
+I planned tests for:
+
+* Authentication and invalid login credentials.
+* Unauthorized access.
+* Making sure companies cannot access each other’s data.
+* Branding changes and publication states.
+* Creating, editing, deleting and reordering sections.
+* Creating, editing, deleting jobs and changing their status.
+* Public careers-page content and job filters.
+* Successful and unsuccessful job-detail requests.
+* Frontend production build.
+* Responsive behavior and accessibility checks.
+
+13. Scalability and Next Steps
+
+If the application grows, there are several things that can be improved.
+
+Database indexes can be added for fields such as company_id, slug, status and searchable fields.
+
+Large job and API results can use pagination instead of loading everything at once.
+
+Object storage and a CDN can be used for media files.
+
+Frequently accessed public pages can also use caching to improve performance.
+
+More detailed role-based permissions can be added for recruiters.
+
+Other future improvements include monitoring, rate limiting, CI/CD, backups and disaster recovery.
+
+14. Deployment
+
+The recommended production setup has three main parts.
+
+Neon PostgreSQL is used for the database, Render runs the FastAPI backend, and Vercel hosts the React frontend.
+
+The frontend gets the deployed backend API URL through an environment variable.
+
+Sensitive information and secrets are kept in the environment settings of the hosting platforms instead of putting them directly into the source code.
