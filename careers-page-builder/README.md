@@ -1,196 +1,134 @@
-# Multi-Tenant ATS Careers Page Builder
+Careers Page Builder
 
-An enterprise-grade, multi-tenant ATS Careers Page Builder engineered for fast-scaling companies to create, design, customize, and publish branded company careers boards. Candidates can seamlessly browse open positions, filter by department, location, or work arrangement, and view detailed job requisitions with rich SEO metadata.
+GitHub:https://github.com/ShailiBoddula/careers-portal⁠￼
+Production Live Link: https://frontend-henna-ten-wg02ufviqk.vercel.app/⁠￼
 
----
+1. Project Overview
 
-## 1. Problem Statement & Motivation
-Modern hiring software often suffers from one of two extremes:
-1. Rigid, cookie-cutter job lists that fail to convey employer brand, culture, and benefits.
-2. Fragile custom-coded career portals that require dedicated engineering sprints every time recruiters want to reorder a section, update perks, or launch a new department opening.
+The Careers Page Builder is a website that helps companies create and manage their careers page. It is mainly made for companies that use an Applicant Tracking System (ATS).
 
-This platform solves this challenge with a **clean, decoupled multi-tenant architecture**:
-- **Recruiters** receive an intuitive visual page builder with live device previews, section reordering, brand identity controls, and job lifecycle management.
-- **Candidates** enjoy ultra-fast, responsive, accessible, and crawlable career pages with real-time composite filtering and zero clutter.
+A recruiter can log in and select their company. After that, they can change the branding of the careers page, add different sections, manage job postings, preview the page and publish it.
 
----
+Candidates can use the public careers page to see information about the company and available jobs. They can also search for a particular job and filter jobs based on location and job type.
 
-## 2. Key Features
+2. What I Built
 
-### For Recruiters:
-- **Tenant-Isolated Authentication**: Secure JWT login with identity derived strictly from server-validated tokens.
-- **Visual Section Builder**: Add, edit, remove, hide, and reorder modular page sections:
-  - *Hero Section* (custom headlines, value propositions, badges)
-  - *About Us* (company origin, mission, team size)
-  - *Company Values* (structured principles rendered as polished cards)
-  - *Life at Company* (day-to-day rhythm, focus blocks, offsites)
-  - *Culture & Engineering* (technical craftsmanship, team habits)
-  - *Benefits & Perks* (comprehensive health, 401k, remote stipends)
-  - *Open Positions* (live positions listing)
-- **Accessible Section Reordering**: Accessible keyboard controls (↑ / ↓) and browser-native ordering without heavy third-party drag-and-drop dependencies.
-- **Brand Identity Studio**: Dynamic primary and secondary brand color pickers, logo customization, header banner imagery, and culture video embeds (YouTube / direct video).
-- **Draft vs. Published Lifecycle**: Safe editing model. Recruiters make edits in draft mode. Changes never touch the live candidate page until deliberate publication. Unpublishing instantly revokes public visibility.
-- **Job Requisition Management**: Add, edit, delete, activate, or deactivate jobs with full attribute validation (title, department, location, job type, description, responsibilities, requirements, benefits, and direct application URL).
-- **Responsive Device Previews**: Toggle instantaneously between Desktop and Mobile viewport frames.
+In this project, I worked on both the recruiter side and the candidate side.
 
-### For Candidates:
-- **Public Career Boards**: Clean routes at `/:companySlug/careers` with zero login requirements.
-- **Real-Time Job Filtering**:
-  - Live full-text search across job titles, departments, and descriptions.
-  - Location filtering (e.g. Remote, San Francisco, Cambridge, Austin).
-  - Employment type filtering (Full-time, Contract, Internship, Part-time).
-  - Combined multi-attribute filtering with automatic result count.
-  - One-click filter reset.
-- **Dedicated Job Detail Requisitions**: Deep links at `/:companySlug/careers/jobs/:jobId` with responsibilities, requirements, compensation, and one-click external application redirect.
-- **Built-in SEO & Crawlability**: Dynamic OpenGraph tags, semantic HTML hierarchy, and automated Google `JobPosting` JSON-LD schema injection for search engine visibility.
+For recruiters, I added login and authentication using JWT. The management pages are protected, so only authorized recruiters can access them.
 
----
+The data of different companies is kept separate. This means one company should not be able to access another company’s data.
 
-## 3. Technology Stack
+Recruiters can also customize the careers page using a branding editor. The page can have different sections like Hero, About, Values, Life at Company, Culture, Perks/Benefits and Open Jobs.
 
-| Layer | Technologies Used |
-|---|---|
-| **Frontend** | React 18, Tailwind CSS, React Router DOM v6, Lucide Icons, Vite |
-| **Backend** | Python 3.11+, FastAPI, SQLAlchemy 2.0 ORM, Pydantic v2 |
-| **Database** | PostgreSQL / Neon (production-ready) & SQLite (zero-config local dev & tests) |
-| **Authentication** | JWT (JSON Web Tokens via `python-jose`) with bcrypt password hashing |
-| **DevOps & Containers** | Docker, Docker Compose, Nginx |
-| **Testing** | Pytest, FastAPI TestClient, in-memory SQLite isolation |
+These sections can be added, edited, deleted, enabled or disabled, and their order can also be changed.
 
----
+For jobs, recruiters can create new jobs, edit them, delete them and change whether a job is open or closed.
 
-## 4. Multi-Tenant Architecture & Security Model
+The careers page also has draft, preview and published states. This allows the recruiter to check the page before making it public.
 
-Strict tenant boundary enforcement is baked directly into the backend data access layer:
-1. **Never Trust Frontend Tenant IDs**: Recruiter requests derive user and company ownership solely from verified JWT claims (`sub`, `company_id`).
-2. **Access Control Checks**: Every operation on a section or job verifies that `entity.company_id == current_user.company_id`. Any cross-company manipulation triggers a strict `403 Forbidden` exception.
-3. **Public Isolation**: The public API strictly filters by `company.slug` and `is_published == True` + `is_active == True`. Draft sections and inactive jobs never leak into public candidate payloads.
+For candidates, I created public company career pages and individual job-detail pages. Candidates can search jobs by title and filter them by location and job type.
 
----
+The website is also responsive, so it can work on mobile, tablet and desktop screens.
 
-## 5. Seed Recruiter Accounts & Demo Credentials
+I also included some accessibility features like semantic HTML, labels and visible keyboard focus.
 
-The database comes pre-seeded with 3 realistic companies:
+The public content is also prepared for SEO with metadata and structured-data support.
 
-| Company | Slug | Recruiter Email | Password | Primary Color |
-|---|---|---|---|---|
-| **Acme Corporation** | `acme` | `recruiter@acme.com` | `password123` | `#2563eb` (Blue) |
-| **NovaLabs AI** | `novalabs` | `recruiter@novalabs.ai` | `password123` | `#7c3aed` (Purple) |
-| **Vertex Health** | `vertex` | `recruiter@vertexhealth.com` | `password123` | `#059669` (Emerald) |
+3. Technology Used
 
----
+For the frontend, I used React 18 along with HTML, CSS, Tailwind CSS, Vite and Lucide Icons.
 
-## 6. Local Setup Instructions
+For the backend, I used Python and FastAPI. REST APIs are used for communication between the frontend and backend. SQLAlchemy is used for database operations and Pydantic is used for validation.
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+ and npm
-- (Optional) Docker and Docker Compose
+For the database, PostgreSQL/Neon is used for production and SQLite is used for isolated testing.
 
-### 1. Backend Setup
-```bash
-cd careers-page-builder/backend
+For authentication, I used JWT with HS256 along with python-jose and bcrypt/passlib.
 
-# Create and activate virtual environment
-python -m venv .venv
-# On Windows:
-.venv\Scripts\activate
-# On Linux/macOS:
-# source .venv/bin/activate
+For deployment and infrastructure, the project uses Docker, Docker Compose, Nginx, Vercel, Railway and Neon.
 
-# Install dependencies
-pip install -r requirements.txt
+Git and GitHub are used for version control.
 
-# Run database migrations and seed realistic sample data
-python seed.py
+4. Architecture
 
-# Run FastAPI backend server
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
-API will run at: `http://localhost:8000`  
-Swagger API Docs: `http://localhost:8000/docs`
+The project mainly has three parts: frontend, backend and database.
 
-### 2. Frontend Setup
-```bash
-cd careers-page-builder/frontend
+React handles the user interface for both recruiters and candidates.
 
-# Install dependencies
-npm install
+FastAPI handles things like authentication, company data, page configuration, sections, jobs, publishing and public data.
 
-# Start Vite development server
-npm run dev
-```
-Frontend will run at: `http://localhost:5173`
+PostgreSQL/Neon is used to store the production data.
 
----
+So the basic flow is:
 
-## 7. Running Tests
+Recruiter/Candidate → React → FastAPI REST API → PostgreSQL/Neon
 
-The test suite covers:
-- User login and JWT issuance
-- Invalid password and unauthorized access prevention
-- Multi-tenancy and tenant isolation enforcement
-- Cross-company job and section manipulation prevention (403 Forbidden)
-- Company branding updates
-- Career page draft vs. publish lifecycle
-- Section CRUD and accessible reordering
-- Job CRUD and active/inactive toggle
-- Combined search, location, and job type filtering
-- Public job detail rendering
+5. How to Run the Project
 
-Run tests with:
-```bash
-cd careers-page-builder
-$env:PYTHONPATH = "backend"
-.\.venv\Scripts\pytest backend/tests -v
-```
+For the backend, first go into the backend folder and create a Python virtual environment. Then install the required packages from backend/requirements.txt.
 
-**Result:** `12 passed in 6.88s`
+After that, copy .env.example to .env and configure the database and JWT settings.
 
----
+The backend can then be started using the Uvicorn command.
 
-## 8. Docker Deployment
+For the frontend, go into the frontend folder and run npm install. Then configure the API URL using the frontend environment file and start the development server.
 
-To launch the full application with Docker Compose:
-```bash
-cd careers-page-builder
-docker-compose up --build
-```
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:8000`
+6. Demo Accounts
 
----
+There are three demo companies available:
 
-## 9. Production Deployment Guide
+* Acme
+* NovaLabs
+* Vertex Health
 
-### Database (Neon PostgreSQL)
-1. Sign up at [neon.tech](https://neon.tech) and create a new project.
-2. Copy your connection string: `postgresql://user:password@ep-xxxx.us-east-2.aws.neon.tech/neondb?sslmode=require`
-3. Supply this string as the `DATABASE_URL` environment variable.
+Each company has a recruiter account that can be used to test the recruiter features.
 
-### Backend (Railway)
-1. In Railway, click **New Project** → **Deploy from GitHub repo**.
-2. Set Root Directory to `/backend`.
-3. Add environment variables:
-   - `DATABASE_URL`: (Your Neon connection string)
-   - `JWT_SECRET`: (A strong random 64-character secret)
-   - `FRONTEND_URL`: (Your deployed Vercel frontend domain)
-4. Deploy.
+7. How the Website is Used
 
-### Frontend (Vercel)
-1. Import repository into Vercel.
-2. Set Root Directory to `frontend`.
-3. Configure build settings:
-   - Framework Preset: `Vite`
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-4. Add environment variable:
-   - `VITE_API_BASE_URL`: (Your Railway backend URL, e.g. `https://careers-api.up.railway.app`)
-5. Deploy.
+Recruiter
 
----
+A recruiter first opens the login page and signs in.
 
-## 10. Limitations & Improvement Plan
-- **Asset Uploads**: Currently supports URL-based image/video links. Future milestone: S3/Cloudflare R2 direct file upload with presigned URLs.
-- **Multi-language Support**: Future addition of i18n localization for global candidate portals.
-- **Analytics & Telemetry**: Future dashboard showing candidate views, search queries, and click-through rates on Apply CTAs.
+Then they select their company and can change the branding, add or edit sections, change the section order and manage jobs.
+
+After making the changes, they can preview the page and publish it.
+
+Candidate
+
+A candidate opens the company’s public careers page.
+
+They can look through the company information, search for jobs and use filters such as location and job type.
+
+After selecting a job, they can see the job details and the available CTA.
+
+8. Testing
+
+I tested the important backend features such as authentication, authorization, company data isolation, branding, publishing, section management, job management, job filtering and job details.
+
+The final local testing showed 49 tests passing, with 0 failures and 0 warnings.
+
+I also checked that the frontend production build was completed successfully.
+
+The responsive design was tested on different screen sizes, including mobile, tablet and desktop sizes.
+
+9. Future Improvements
+
+There are still some things that can be improved in the project.
+
+One improvement would be adding better drag-and-drop editing and page templates.
+
+Media files like logos, banners and videos could also be stored using production storage and a CDN.
+
+Recruiter permissions could be made more detailed by adding different roles.
+
+Another useful feature would be analytics to see things like page views, job views, searches and conversions.
+
+For companies with many jobs, pagination and better database indexing would also be useful.
+
+The project could also be improved with CI/CD, monitoring, logging, rate limiting and stronger production security.
+
+Finally, automated browser testing and accessibility testing could be added.
+
+10. Submission
+
+The submission contains the GitHub repository with the working code and sample data, the production link after deployment, the Tech Spec document, README, AGENT_LOG and a demo video of maximum 3 minutes.
