@@ -262,7 +262,7 @@ export default function PublicCareers() {
           <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700">{company.name}</span>
             <span>•</span>
-            <span>Powered by Multi-Tenant ATS Page Builder</span>
+            <span>Powered by Careers Miner</span>
           </div>
           <p>© {new Date().getFullYear()} {company.name}. All rights reserved.</p>
         </div>

@@ -39,7 +39,7 @@ export default function Login() {
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 mb-4">
           <Briefcase className="w-6 h-6" />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">ATS Careers Page Builder</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-white">Careers Miner</h1>
         <p className="mt-2 text-sm text-slate-400">
           Sign in to your recruiter portal to customize your brand and manage open jobs
         </p>

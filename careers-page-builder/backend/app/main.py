@@ -7,8 +7,8 @@ from app.api import auth, company, careers, sections, jobs, public
 settings = get_settings()
 
 app = FastAPI(
-    title="Careers Page Builder API",
-    description="Multi-tenant ATS Careers Page Builder Backend with JWT Auth, Section Reordering, and Public Job Boards",
+    title="Careers Miner API",
+    description="Multi-tenant ATS Careers Page Builder & Miner Backend with JWT Auth, Section Reordering, and Public Job Boards",
     version="1.0.0",
 )
 
