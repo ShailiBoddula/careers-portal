@@ -1,9 +1,9 @@
-Careers Page Builder
+# Careers Page Builder
 
-Production Live Link: https://frontend-henna-ten-wg02ufviqk.vercel.app/⁠￼
-GitHub:https://github.com/ShailiBoddula/careers-portal
+**Production Live Link:** https://frontend-henna-ten-wg02ufviqk.vercel.app/  
+**GitHub:** https://github.com/ShailiBoddula/careers-portal
 
-1. Project Overview
+## **1. Project Overview**
 
 The Careers Page Builder is a website that helps companies create and manage their careers page. It is mainly made for companies that use an Applicant Tracking System (ATS).
 
@@ -11,7 +11,7 @@ A recruiter can log in and select their company. After that, they can change the
 
 Candidates can use the public careers page to see information about the company and available jobs. They can also search for a particular job and filter jobs based on location and job type.
 
-2. What I Built
+## **2. What I Built**
 
 In this project, I worked on both the recruiter side and the candidate side.
 
@@ -35,7 +35,7 @@ I also included some accessibility features like semantic HTML, labels and visib
 
 The public content is also prepared for SEO with metadata and structured-data support.
 
-3. Technology Used
+## **3. Technology Used**
 
 For the frontend, I used React 18 along with HTML, CSS, Tailwind CSS, Vite and Lucide Icons.
 
@@ -49,7 +49,7 @@ For deployment and infrastructure, the project uses Docker, Docker Compose, Ngin
 
 Git and GitHub are used for version control.
 
-4. Architecture
+## **4. Architecture**
 
 The project mainly has three parts: frontend, backend and database.
 
@@ -61,31 +61,31 @@ PostgreSQL/Neon is used to store the production data.
 
 So the basic flow is:
 
-Recruiter/Candidate → React → FastAPI REST API → PostgreSQL/Neon
+**Recruiter/Candidate → React → FastAPI REST API → PostgreSQL/Neon**
 
-5. How to Run the Project
+## **5. How to Run the Project**
 
-For the backend, first go into the backend folder and create a Python virtual environment. Then install the required packages from backend/requirements.txt.
+For the backend, first go into the `backend` folder and create a Python virtual environment. Then install the required packages from `backend/requirements.txt`.
 
-After that, copy .env.example to .env and configure the database and JWT settings.
+After that, copy `.env.example` to `.env` and configure the database and JWT settings.
 
 The backend can then be started using the Uvicorn command.
 
-For the frontend, go into the frontend folder and run npm install. Then configure the API URL using the frontend environment file and start the development server.
+For the frontend, go into the `frontend` folder and run `npm install`. Then configure the API URL using the frontend environment file and start the development server.
 
-6. Demo Accounts
+## **6. Demo Accounts**
 
 There are three demo companies available:
 
-* Acme
-* NovaLabs
-* Vertex Health
+- Acme
+- NovaLabs
+- Vertex Health
 
 Each company has a recruiter account that can be used to test the recruiter features.
 
-7. How the Website is Used
+## **7. How the Website is Used**
 
-Recruiter
+### **Recruiter**
 
 A recruiter first opens the login page and signs in.
 
@@ -93,7 +93,7 @@ Then they select their company and can change the branding, add or edit sections
 
 After making the changes, they can preview the page and publish it.
 
-Candidate
+### **Candidate**
 
 A candidate opens the company’s public careers page.
 
@@ -101,17 +101,17 @@ They can look through the company information, search for jobs and use filters s
 
 After selecting a job, they can see the job details and the available CTA.
 
-8. Testing
+## **8. Testing**
 
 I tested the important backend features such as authentication, authorization, company data isolation, branding, publishing, section management, job management, job filtering and job details.
 
-The final local testing showed 49 tests passing, with 0 failures and 0 warnings.
+The final local testing showed **49 tests passing, with 0 failures and 0 warnings**.
 
 I also checked that the frontend production build was completed successfully.
 
 The responsive design was tested on different screen sizes, including mobile, tablet and desktop sizes.
 
-9. Future Improvements
+## **9. Future Improvements**
 
 There are still some things that can be improved in the project.
 
@@ -129,6 +129,6 @@ The project could also be improved with CI/CD, monitoring, logging, rate limitin
 
 Finally, automated browser testing and accessibility testing could be added.
 
-10. Submission
+## **10. Submission**
 
 The submission contains the GitHub repository with the working code and sample data, the production link after deployment, the Tech Spec document, README, AGENT_LOG and a demo video of maximum 3 minutes.
