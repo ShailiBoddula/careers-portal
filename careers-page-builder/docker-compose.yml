@@ -11,7 +11,7 @@ services:
       - JWT_SECRET=production-grade-super-secret-key-replace-in-real-deployment-min-32-chars
       - JWT_ALGORITHM=HS256
       - JWT_EXPIRATION_HOURS=24
-      - FRONTEND_URL=https://careers-portal-x8lt.onrender.com
+      - FRONTEND_URL=https://frontend-henna-ten-wg02ufviqk.vercel.app
       - APP_ENV=production
       - APP_HOST=0.0.0.0
       - APP_PORT=8000
